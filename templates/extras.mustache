@@ -1,0 +1,10 @@
+// app.js
+.state('admin.{{g_object}}_lista', {
+    url: '/{{g_object}}/lista',
+    title: 'Lista de {{g_plural}}',
+    templateUrl: 'partials/{{g_object}}/list.html',
+    controller: '{{g_class}}ListaController',
+    ... global_config
+})
+
+{ name: 'Res{{g_class}}', target: '{{g_class}}', path: false }

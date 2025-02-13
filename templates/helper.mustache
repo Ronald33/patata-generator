@@ -1,0 +1,22 @@
+<?php
+abstract class {{g_class}}Helper
+{
+    public static function castTo{{g_class}}($object, $id = NULL)
+    {
+        assert($object instanceof {{g_class}} == false || $object instanceof stdClass == false, 'Ocurrió un error en el casteo');
+        if($object instanceof {{g_class}}) { return $object; }
+
+        ${{g_object}} = Helper::cast('{{g_class}}', $object);
+        
+        {{#complex}}
+        {{#allow_null}}if(isset($object->{{name}})) { {{/allow_null}}${{g_object}}->set{{Name}}(Helper::cast('{{class}}', $object->{{name}}));{{#allow_null}} }{{/allow_null}}
+        {{/complex}}
+
+        if($id === NULL)
+        {
+            // Set values by default
+        }
+
+        return ${{g_object}};
+    }
+}

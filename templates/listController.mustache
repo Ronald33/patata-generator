@@ -1,0 +1,51 @@
+(function(){
+    "use strict";
+    angular.module('app').controller('{{g_class}}ListController', {{g_object}}ListaController);
+
+    {{g_object}}ListaController.$inject = ['Res{{g_class}}', '$uibModal', 'Helper'];
+    function {{g_object}}ListaController(Res{{g_class}}, $uibModal, Helper)
+    {
+        var vm = this;
+        
+        vm.abrir_form = abrir_form;
+        vm.requestDataTable = requestDataTable;
+        vm.eliminar = eliminar;
+
+        _init();
+
+        function _init()
+        {
+            requestDataTable();
+        }
+
+        function abrir_form({{g_object}})
+        {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'partials/{{g_object}}/form.html', 
+                controller: '{{g_class}}FormController', 
+                controllerAs: 'vm', 
+                bindToController: true, 
+                size: 'lg', 
+                resolve: { {{g_object}}: function() { return {{g_object}} || null; } }
+            });
+
+            modalInstance.result.then(function(response){
+                if({{g_object}}) { Helper.updateObject({{g_object}}, response); }
+                else { vm.{{g_plural}}.push(response); }
+            }, angular.noop);
+        }
+
+        function requestDataTable()
+        {
+            Res{{g_class}}.query().$promise.then(function(response){
+                vm.{{g_plural}} = response;
+                vm.displayCollection = [].concat(vm.{{g_plural}});
+            });
+        }
+
+        function eliminar({{g_object}})
+        {
+            Helper.eliminar(Res{{g_class}}, {{g_object}}, vm.{{g_plural}}, 'Se eliminará el {{g_object}}: <b>' + {{g_object}}.nombre + '</b>, ¿Desea continuar?', 'La {{g_object}} fue eliminada correctamente');
+        }
+    }
+})();

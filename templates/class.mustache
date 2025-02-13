@@ -1,0 +1,21 @@
+<?php
+class {{g_class}} implements JsonSerializable 
+{
+    {{#simple}}
+    private ${{name}};
+    {{/simple}}
+    {{#complex}}
+    private ${{name}};
+    {{/complex}}
+
+    {{#simple}}
+    public function get{{Name}}() { return $this->{{name}}; }
+    public function set{{Name}}(${{name}}) { $this->{{name}} = ${{name}}; }
+    {{/simple}}
+    {{#complex}}
+    public function get{{Name}}() { return $this->{{name}}; }
+    public function set{{Name}}(${{name}}) { $this->{{name}} = ${{name}}; }
+    {{/complex}}
+
+    public function jsonSerialize(): array { return array_merge(get_object_vars($this), ['__class' => get_class($this)]);  }
+}

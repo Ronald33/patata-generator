@@ -1,0 +1,42 @@
+{{=<% %>=}}
+<form name="form" ng-submit="vm.guardar()">
+    <div class="modal-header bg-primary">
+        <h3 class="modal-title">{{vm.action}} <%g_object%></h3>
+    </div>
+    <div class="modal-body">
+        <%#simple_without_id%>
+        <div class="form-group">
+            <label for="<%name%>" class="control-label"><%Name%><%^allow_null%><span class="text-danger">*</span><%/allow_null%></label>
+            <%#is_string%>
+            <input type="text" name="<%name%>" id="<%name%>" class="form-control" ng-model="vm.<%g_object%>.<%name%>" minlength="2" maxlength="<%param%>" is-alphanumeric-and-spaces<%^allow_null%> required<%/allow_null%><%#is_first%> autofocus<%/is_first%> />
+            <%/is_string%>
+            <%#is_int%>
+            <input type="number" step="0.01" name="<%name%>" id="<%name%>" class="form-control" ng-model="vm.<%g_object%>.<%name%>"<%^allow_null%> required<%/allow_null%><%#is_first%> autofocus<%/is_first%> />
+            <%/is_int%>
+            <%#is_enum%>
+            <div class="btn-group btn-group-justified">
+                <label ng-repeat="<%name%> in vm.tipos_de_<%g_object%>" class="btn btn-default text-capitalize" ng-model="vm.<%g_object%>.tipo" uib-btn-radio="'{{tipo}}'">{{tipo | capitalize}}</label>
+            </div>
+            <%/is_enum%>
+            <%#is_datetime%>
+            <input date-range-picker options="daterangepicker.opt.single" class="form-control date-picker" type="text" ng-model="vm.<%g_object%>.<%name%>" required />
+            <%/is_datetime%>
+        </div>
+        <%/simple_without_id%>
+        <%#complex%>
+        <div class="form-group">
+            <label for="<%name%>" class="control-label"><%Name%><span class="text-danger">*</span></label>
+            <select name="<%name%>" id="<%name%>" class="form-control" ng-model="vm.<%g_object%>.<%name%>" ng-options="<%name%> as <%name%>.nombre for <%name%> in vm.<%plural%> track by <%name%>.id"<%^allow_null%> required<%/allow_null%><%#is_first%> autofocus<%/is_first%>>
+                <option value="">Seleccione una <%name%></option>
+            </select>
+        </div>
+        <%/complex%>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger pull-left" ng-click="vm.cerrar()">Cerrar</button>
+        <button type="submit" class="btn btn-success pull-right" ng-disabled="form.$invalid">Guardar</button>
+    </div>
+    <div class="container-fluid">
+        <show-errors errors="vm.errors"></show-errors>
+    </div>
+</form>

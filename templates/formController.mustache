@@ -1,0 +1,39 @@
+(function(){
+    "use strict";
+
+    angular.module('app').controller('{{g_class}}FormController', {{g_object}}FormController);
+
+    {{g_object}}FormController.$inject = ['$uibModalInstance', 'Res{{g_class}}', 'Helper', '{{g_object}}'];
+    function {{g_object}}FormController($uibModalInstance, Res{{g_class}}, Helper, {{g_object}})
+    {
+        var vm = this;
+
+        vm.cerrar = cerrar;
+        vm.guardar = guardar;
+
+        _init();
+
+        function _init()
+        {
+            if({{g_object}})
+            {
+                vm.action = 'Editar';
+                Res{{g_class}}.get({id: {{g_object}}.id}, function(response){
+                    vm.{{g_object}} = response;
+                });
+            }
+            else
+            {
+                vm.action = 'Agregar';
+                vm.{{g_object}} = {};
+            }
+        }
+
+        function cerrar() { $uibModalInstance.dismiss('cancel'); }
+        function guardar()
+        {
+            var item = angular.copy(vm.{{g_object}});
+            Helper.guardar_modal(Res{{g_class}}, item, 'El {{g_object}} fue guardado correctamente', 'El {{g_object}} no pudo ser guardado', vm, $uibModalInstance);
+        }
+    }
+})();

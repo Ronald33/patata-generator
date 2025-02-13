@@ -1,0 +1,65 @@
+<?php
+class {{g_class}}Controller
+{
+    private $dao;
+    private $view;
+
+    public function __construct()
+    {
+        $this->dao = new {{g_class}}DAO();
+        $this->view = Repository::getResponse();
+    }
+
+    public function get($id = null)
+    {
+        if($id)
+        {
+            $result = $this->dao->selectById($id);
+            if($result) { $this->view->j200($result); }
+            else { $this->view->j404(); }
+        }
+        else { $this->view->j200($this->dao->selectAll()); }
+    }
+
+    public function post()
+    {
+        $payload = Helper::getPayload();
+        $result = {{g_class}}Validator::validate($payload);
+        if($result !== true) { $this->view->j400($result); }
+        {{^is_complex}}
+        ${{g_object}} = Helper::cast('{{g_class}}', $payload);
+        {{/is_complex}}
+        {{#is_complex}}
+        ${{g_object}} = {{g_class}}Helper::castTo{{g_class}}($payload);
+        {{/is_complex}}
+        $this->dao->insert(${{g_object}});
+        $this->view->j201(${{g_object}});
+    }
+
+    public function put($id = null)
+    {
+        if($id == null) { $this->view->j501(); }
+
+        $payload = Helper::getPayload();
+        $result = {{g_class}}Validator::validate($payload, $id);
+        if($result !== true) { $this->view->j400($result); }
+        {{^is_complex}}
+        ${{g_object}} = Helper::cast('{{g_class}}', $payload);
+        {{/is_complex}}
+        {{#is_complex}}
+        ${{g_object}} = {{g_class}}Helper::castTo{{g_class}}($payload, $id);
+        {{/is_complex}}
+        ${{g_object}}->setId($id);
+        $this->dao->update(${{g_object}});
+        $this->view->j201(${{g_object}});
+    }
+
+    public function delete($id = null)
+    {
+        if($id == null) { $this->view->j501(); }
+        $this->dao->delete($id);
+        $this->view->j200();
+    }
+
+    public function options() { header('Access-Control-Allow-Methods: ' . Helper::getAllowedMethodsFromClass(__CLASS__)); }
+}

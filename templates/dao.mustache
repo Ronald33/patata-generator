@@ -1,0 +1,101 @@
+<?php
+class {{g_class}}DAO
+{
+    private static $table = '{{g_table}}';
+
+    private static $selected_fields = 
+    [
+        {{#simple}}
+        {{#is_datetime}}'UNIX_TIMESTAMP({{field}})' => '{{name}}'{{^is_last}},{{/is_last}}{{/is_datetime}}{{^is_datetime}}'{{field}}' => '{{name}}'{{^is_last}},{{/is_last}}{{/is_datetime}}
+        {{/simple}}
+        {{#complex}}
+        '{{field}}' => '{{field_without_prefix}}'{{^is_last}},{{/is_last}}
+        {{/complex}}
+    ];
+
+	private static function getFieldsToInsert({{g_class}} ${{g_object}})
+	{
+        $fields = 
+        [
+            {{#simple_without_id}}
+            '{{field}}' => {{^is_datetime}}${{g_object}}->get{{Name}}(){{/is_datetime}}{{#is_datetime}}{{#allow_null}}${{g_object}}->get{{Name}}() != null ? {{/allow_null}}Helper::getDateTimeFromTimestamp(${{g_object}}->get{{Name}}()){{#allow_null}} : null {{/allow_null}}{{/is_datetime}}{{^is_last}},{{/is_last}}
+            {{/simple_without_id}}
+            {{#complex}}
+            '{{field}}' => {{#allow_null}}${{g_object}}->get{{Name}}() instanceof {{class}} ? ${{g_object}}->get{{Name}}()->getId() : null{{/allow_null}}{{^allow_null}}${{g_object}}->get{{Name}}()->getId(){{/allow_null}}{{^is_last}},{{/is_last}}
+            {{/complex}}
+        ];
+
+		return $fields;
+    }
+    
+    private function processRow(&$row, $key, $params = [])
+    {
+		{{#simple}}
+        {{#is_int}}{{#allow_null}}if($row->{{name}}) { {{/allow_null}}$row->{{name}} = (int) $row->{{name}};{{#allow_null}} }{{/allow_null}}{{/is_int}}{{#is_boolean}}{{#allow_null}}if($row->{{name}}) { {{/allow_null}}$row->{{name}} = (bool) $row->{{name}};{{#allow_null}} }{{/allow_null}}{{/is_boolean}}{{#is_datetime}}{{#allow_null}}if($row->{{name}}) { {{/allow_null}}$row->{{name}} = (int) $row->{{name}};{{#allow_null}} }{{/allow_null}}{{/is_datetime}}
+        {{/simple}}
+
+        $cast = isset($params['cast']) ? $params['cast'] : false;
+        {{#is_complex}}
+        $set_sub_items = isset($params['set_sub_items']) ? $params['set_sub_items'] : false;
+
+        if($set_sub_items)
+        {
+            {{#complex}}
+            $dao_{{object}} = new {{class}}DAO();
+            {{/complex}}
+
+            {{#complex}}
+            $row->{{name}} = {{#allow_null}}$row->{{field_without_prefix}} ? {{/allow_null}}$dao_{{object}}->selectById($row->{{field_without_prefix}}, $cast){{#allow_null}} : null{{/allow_null}};
+            {{/complex}}
+
+            {{#complex}}
+            unset($row->{{field_without_prefix}});
+            {{/complex}}
+
+            if($cast) { $row = {{g_class}}Helper::castTo{{g_class}}($row, $row->id); }
+        }
+        else
+        {
+            if($cast) { $row = Helper::cast('{{g_class}}', $row); }
+        }
+        {{/is_complex}}
+        {{^is_complex}}if($cast) { $row = Helper::cast('{{g_class}}', $row); }{{/is_complex}}
+    }
+
+    public function selectAll($cast = true{{#is_complex}}, $set_sub_items = true{{/is_complex}})
+    {
+        $db = Repository::getDB();
+        $results = $db->select(self::$table, self::$selected_fields);
+        array_walk($results, [$this, 'processRow'], ['cast' => $cast{{#is_complex}}, 'set_sub_items' => $set_sub_items{{/is_complex}}]);
+        return $results;
+    }
+    
+    public function selectById($id, $cast = true{{#is_complex}}, $set_sub_items = true{{/is_complex}})
+    {
+        $db = Repository::getDB();
+        $result = $db->selectOne(self::$table, self::$selected_fields, '{{g_prefix}}_id = :id', ['id' => $id]);
+        if($result) { $this->processRow($result, 0, ['cast' => $cast{{#is_complex}}, 'set_sub_items' => $set_sub_items{{/is_complex}}]); }
+        return $result;
+    }
+
+    public function insert({{g_class}} ${{g_object}})
+    {
+        $db = Repository::getDB();
+        $data = self::getFieldsToInsert(${{g_object}});
+        $db->insert(self::$table, $data);
+        ${{g_object}}->setId($db->getLastInsertId());
+    }
+
+    public function update({{g_class}} ${{g_object}})
+    {
+        $db = Repository::getDB();
+        $replacements = self::getFieldsToInsert(${{g_object}});
+        $db->update(self::$table, $replacements, '{{g_prefix}}_id = :id', ['id' => ${{g_object}}->getId()]);
+    }
+
+    public function delete($id)
+    {
+        $db = Repository::getDB();
+        $db->delete(self::$table, '{{g_prefix}}_id = :id', ['id' => $id]);
+    }
+}

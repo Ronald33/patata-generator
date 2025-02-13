@@ -1,0 +1,21 @@
+<?php
+abstract class {{g_class}}Validator
+{
+    public static function validate($data, $id = NULL)
+    {
+        $validator = Repository::getValidator();
+        {{#simple_without_id}}
+        {{#is_enum}}
+        $extrasDAO = new ExtrasDAO();
+        ${{name}}s = $extrasDAO->getEnumValues('{{g_table}}', '{{field}}');
+        {{/is_enum}}
+        $validator->addInputFromObject('{{Name}}', $data, '{{name}}'{{#allow_null}}, true{{/allow_null}}){{#is_string}}->addRule('isAlphanumericAndSpaces')->addRule('minLengthIs', 2)->addRule('maxLengthIs', {{param}}){{/is_string}}{{#is_unique}}->addRule('isUnique', '{{g_table}}', '{{field}}', isset($id) ? '{{g_prefix}}_id != ' . $id : '1'){{/is_unique}}{{#is_enum}}->addRule('isIn', ${{name}}s){{/is_enum}}{{#is_datetime}}->addRule('isPositiveOrZero'){{/is_datetime}}{{#is_int}}->addRule('isPositive'){{/is_int}};
+        {{/simple_without_id}}
+        {{#complex}}
+        ${{field_without_prefix}} = (isset($data->{{object}}) && isset($data->{{object}}->id)) ? $data->{{object}}->id : NULL;
+        $validator->addInput('{{class}}', ${{field_without_prefix}}{{#allow_null}}, true{{/allow_null}})->addRule(['rowExists', 'Ingrese un {{object}} válido'], '{{table}}', '{{prefix}}_id');
+        {{/complex}}
+        if($validator->hasErrors()) { return $validator->getInputsWithErrors(); }
+        return true;
+    }
+}
