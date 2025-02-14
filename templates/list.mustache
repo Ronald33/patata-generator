@@ -58,7 +58,7 @@
                 <%#complex%>
                 <th>
                     <!--<input type="search" class="input-sm form-control" st-search="<%name%>" />-->
-                    <select class="form-control" id="<%name%>" ng-model="vm.<%name%>" ng-options="<%name%> as <%name%>.nombre for <%name%> in vm.<%plural%> | orderBy: 'id' track by <%name%>.id" st-search="<%name%>.nombre">
+                    <select class="form-control" id="<%name%>" ng-model="vm.<%name%>" ng-options="<%name%> as <%name%>.nombre for <%name%> in vm.<%plural%> | orderBy: 'id' track by <%name%>.id" st-search="<%name%>.id">
                         <option value="">Seleccione</option>
                     </select>
                 </th>
