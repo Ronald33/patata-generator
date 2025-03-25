@@ -29,23 +29,26 @@
                     <%#is_string%>
                     <input type="search" class="input-sm form-control" st-search="<%name%>" />
                     <%/is_string%>
+                    <%#is_text%>
+                    <input type="search" class="input-sm form-control" st-search="<%name%>" />
+                    <%/is_text%>
                     <%#is_enum%>
                     <select class="form-control" st-search="__class">
                         <option value="">Seleccione</option>
                         <option ng-repeat="tipo in vm.tipos" value="{{tipo}}">{{tipo | capitalize}}</option>
                     </select>
                     <%/is_enum%>
-                    <%#is_datetime%>
+                    <%#is_date%>
                     <input type="hidden" ng-model="vm.<%name%>" st-date-search="<%name%>" />
                     <div class="input-group input-sm">
-                        <input date-range-picker options="daterangepicker_opts" class="form-control date-picker" type="text" ng-model="vm.<%name%>" />
+                        <input date-range-picker options="daterangepicker.opts.range" class="form-control date-picker" type="text" ng-model="vm.<%name%>" />
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button" ng-click="resetDateRange(vm, '<%name%>')">
                                 <span class="glyphicon glyphicon-ban-circle"></span>
                             </button>
                         </span>
                     </div>
-                    <%/is_datetime%>
+                    <%/is_date%>
                     <%#is_boolean%>
                     <select class="form-control" st-search="<%name%>">
                         <option value="" selected>Seleccione</option>
@@ -83,12 +86,15 @@
                     <%#is_string%>
                     {{<%g_object%>.<%name%>}}
                     <%/is_string%>
+                    <%#is_text%>
+                    {{<%g_object%>.<%name%>}}
+                    <%/is_text%>
                     <%#is_enum%>
                     {{<%g_object%>.<%name%> | capitalize}}
                     <%/is_enum%>
-                    <%#is_datetime%>
+                    <%#is_date%>
                     {{<%g_object%>.<%name%> | myDateTime}}
-                    <%/is_datetime%>
+                    <%/is_date%>
                     <%#is_boolean%>
                     <span class="label label-{{<%g_object%>.<%name%> ? 'success' : 'danger'}}">{{<%g_object%>.<%name%> ? 'Habilitado' : 'Deshabilitado'}}</span>
                     <%/is_boolean%>

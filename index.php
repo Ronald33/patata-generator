@@ -11,11 +11,11 @@ foreach($entities as $entity)
 {
     $entity = array_merge($entity, Helper::getFields($entity['g_table']));
     $entity['is_complex'] = sizeof($entity['complex']) > 0;
-
+    
     foreach($files as $key => $file)
     {
         if(!$entity['is_complex'] && $key == 'helper') { continue; }
-        $mustache = new Mustache_Engine(); 
+        $mustache = new Mustache_Engine();
 
         $name = str_replace('{{name}}', $entity['g_class'], $file['name']);
         $path = str_replace('{{name}}', $entity['g_object'], $file['path']);

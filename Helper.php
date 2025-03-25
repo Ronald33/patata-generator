@@ -68,7 +68,7 @@ abstract class Helper
 				preg_match('/^(\w+)(\((.*?)\))?$/', $result->Type, $matches);
 				$type = $matches[1];
         		$param = isset($matches[3]) ? $matches[3] : null; 
-				array_push($simple, ['field' => $field, 'field_without_prefix' => $field_without_prefix, 'name' => $name, 'Name' => ucfirst($name), 'allow_null' => $result->Null != 'NO', 'is_int' => $type == 'int', 'is_string' => $type == 'char' || $type == 'varchar', 'is_enum' => $type == 'enum', 'is_datetime' => $type == 'datetime', 'is_boolean' => $type == 'tinyint', 'param' => $param, 'is_unique' => $result->Key == 'UNI']);
+				array_push($simple, ['field' => $field, 'field_without_prefix' => $field_without_prefix, 'name' => $name, 'Name' => ucfirst($name), 'allow_null' => $result->Null != 'NO', 'is_int' => $type == 'int', 'is_string' => $type == 'char' || $type == 'varchar', 'is_text' => $type == 'text', 'is_enum' => $type == 'enum', 'is_date' => $type == 'date' || $type == 'datetime', 'is_boolean' => $type == 'tinyint', 'param' => $param, 'is_unique' => $result->Key == 'UNI']);
 			}
 			else { $tmp[$result->Field] = $result->Null != 'NO'; }
 		}
@@ -88,8 +88,9 @@ abstract class Helper
 			$class = ucfirst($object);
 
 			$field_without_prefix = substr($field, 5);
-			$field_cleared = self::clearField($field_without_prefix);
-			$name = strlen($field_cleared) == 0 ? $object : self::toCamelCase($field_cleared) . $class;
+			$cleared_field = self::clearField($field_without_prefix);
+			// $name = strlen($cleared_field) == 0 ? $object : self::toCamelCase($cleared_field) . $class;
+			$name = strlen($cleared_field) == 0 ? $object : self::toCamelCase($cleared_field);
 
 			array_push($complex, ['field' => $match[1], 'field_without_prefix' => $field_without_prefix, 'table' => $table, 'prefix' => $prefix, 'class' => $class, 'object' => $object, 'name' => $name, 'Name' => ucfirst($name), 'plural' => $plural, 'allow_null' => $tmp[$field]]);
 		}
@@ -123,5 +124,11 @@ abstract class Helper
 		return ['simple' => $simple_marked, 'has_id' => isset($id), 'id' => $id, 'simple_without_id' => $simple_without_id, 'complex' => $complex_marked, 'g_prefix' => $prefix];
 	}
 
-	private static function clearField($field) { return preg_replace('/_?[a-z]{4}_id$/', '', $field); }
+	private static function clearField($field)
+	{
+		$field = preg_replace('/_[a-zA-Z]{4}_/', '_', $field);
+		$field = preg_replace('/_id$/', '', $field); 
+		preg_match_all('/\b(\w{5,})\b/', $field, $matches);
+		return !empty($matches[1]) ? implode('_', $matches[1]) : '';
+	}
 }

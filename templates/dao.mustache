@@ -6,7 +6,7 @@ class {{g_class}}DAO
     private static $selected_fields = 
     [
         {{#simple}}
-        {{#is_datetime}}'UNIX_TIMESTAMP({{field}})' => '{{name}}'{{^is_last}},{{/is_last}}{{/is_datetime}}{{^is_datetime}}'{{field}}' => '{{name}}'{{^is_last}},{{/is_last}}{{/is_datetime}}
+        {{#is_date}}'UNIX_TIMESTAMP({{field}})' => '{{name}}'{{^is_last}},{{/is_last}}{{/is_date}}{{^is_date}}'{{field}}' => '{{name}}'{{^is_last}},{{/is_last}}{{/is_date}}
         {{/simple}}
         {{#complex}}
         '{{field}}' => '{{field_without_prefix}}'{{^is_last}},{{/is_last}}
@@ -18,7 +18,7 @@ class {{g_class}}DAO
         $fields = 
         [
             {{#simple_without_id}}
-            '{{field}}' => {{^is_datetime}}${{g_object}}->get{{Name}}(){{/is_datetime}}{{#is_datetime}}{{#allow_null}}${{g_object}}->get{{Name}}() != null ? {{/allow_null}}Helper::getDateTimeFromTimestamp(${{g_object}}->get{{Name}}()){{#allow_null}} : null {{/allow_null}}{{/is_datetime}}{{^is_last}},{{/is_last}}
+            '{{field}}' => {{^is_date}}${{g_object}}->get{{Name}}(){{/is_date}}{{#is_date}}{{#allow_null}}${{g_object}}->get{{Name}}() != null ? {{/allow_null}}Helper::getDateTimeFromTimestamp(${{g_object}}->get{{Name}}()){{#allow_null}} : null {{/allow_null}}{{/is_date}}{{^is_last}},{{/is_last}}
             {{/simple_without_id}}
             {{#complex}}
             '{{field}}' => {{#allow_null}}${{g_object}}->get{{Name}}() instanceof {{class}} ? ${{g_object}}->get{{Name}}()->getId() : null{{/allow_null}}{{^allow_null}}${{g_object}}->get{{Name}}()->getId(){{/allow_null}}{{^is_last}},{{/is_last}}
@@ -31,7 +31,7 @@ class {{g_class}}DAO
     private function processRow(&$row, $key, $params = [])
     {
 		{{#simple}}
-        {{#is_int}}{{#allow_null}}if($row->{{name}}) { {{/allow_null}}$row->{{name}} = (int) $row->{{name}};{{#allow_null}} }{{/allow_null}}{{/is_int}}{{#is_boolean}}{{#allow_null}}if($row->{{name}}) { {{/allow_null}}$row->{{name}} = (bool) $row->{{name}};{{#allow_null}} }{{/allow_null}}{{/is_boolean}}{{#is_datetime}}{{#allow_null}}if($row->{{name}}) { {{/allow_null}}$row->{{name}} = (int) $row->{{name}};{{#allow_null}} }{{/allow_null}}{{/is_datetime}}
+        {{#is_int}}{{#allow_null}}if($row->{{name}}) { {{/allow_null}}$row->{{name}} = (int) $row->{{name}};{{#allow_null}} }{{/allow_null}}{{/is_int}}{{#is_boolean}}{{#allow_null}}if($row->{{name}}) { {{/allow_null}}$row->{{name}} = (bool) $row->{{name}};{{#allow_null}} }{{/allow_null}}{{/is_boolean}}{{#is_date}}{{#allow_null}}if($row->{{name}}) { {{/allow_null}}$row->{{name}} = (int) $row->{{name}};{{#allow_null}} }{{/allow_null}}{{/is_date}}
         {{/simple}}
 
         $cast = isset($params['cast']) ? $params['cast'] : false;
@@ -40,13 +40,19 @@ class {{g_class}}DAO
 
         if($set_sub_items)
         {
-            {{#complex}}
+            {{#complex}}{{^allow_null}}
             $dao_{{object}} = new {{class}}DAO();
-            {{/complex}}
+            $row->{{name}} = $dao_{{object}}->selectById($row->{{field_without_prefix}}, $cast);
+            {{/allow_null}}{{/complex}}
 
-            {{#complex}}
-            $row->{{name}} = {{#allow_null}}$row->{{field_without_prefix}} ? {{/allow_null}}$dao_{{object}}->selectById($row->{{field_without_prefix}}, $cast){{#allow_null}} : null{{/allow_null}};
-            {{/complex}}
+            {{#complex}}{{#allow_null}}
+            if(isset($row->{{field_without_prefix}}))
+            {
+                $dao_{{object}} = new {{class}}DAO();
+                $row->{{name}} = $dao_{{object}}->selectById($row->{{field_without_prefix}}, $cast);
+            }
+            else { $row->{{name}} = null; }
+            {{/allow_null}}{{/complex}}
 
             {{#complex}}
             unset($row->{{field_without_prefix}});

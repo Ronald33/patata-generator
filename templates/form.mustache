@@ -10,6 +10,9 @@
             <%#is_string%>
             <input type="text" name="<%name%>" id="<%name%>" class="form-control" ng-model="vm.<%g_object%>.<%name%>" minlength="2" maxlength="<%param%>" is-alphanumeric-and-spaces<%^allow_null%> required<%/allow_null%><%#is_first%> autofocus<%/is_first%> />
             <%/is_string%>
+            <%#is_text%>
+            <textarea class="form-control" ng-model="vm.<%g_object%>.<%name%>" is-alphanumeric-and-spaces<%^allow_null%> required<%/allow_null%><%#is_first%> autofocus<%/is_first%>></textarea>
+            <%/is_text%>
             <%#is_int%>
             <input type="number" step="0.01" name="<%name%>" id="<%name%>" class="form-control" ng-model="vm.<%g_object%>.<%name%>"<%^allow_null%> required<%/allow_null%><%#is_first%> autofocus<%/is_first%> />
             <%/is_int%>
@@ -18,9 +21,9 @@
                 <label ng-repeat="<%name%> in vm.tipos_de_<%g_object%>" class="btn btn-default text-capitalize" ng-model="vm.<%g_object%>.tipo" uib-btn-radio="'{{tipo}}'">{{tipo | capitalize}}</label>
             </div>
             <%/is_enum%>
-            <%#is_datetime%>
-            <input date-range-picker options="daterangepicker.opt.single" class="form-control date-picker" type="text" ng-model="vm.<%g_object%>.<%name%>" required />
-            <%/is_datetime%>
+            <%#is_date%>
+            <input date-range-picker options="daterangepicker.opts.single" class="form-control date-picker" type="text" ng-model="vm.<%g_object%>.<%name%>" required />
+            <%/is_date%>
         </div>
         <%/simple_without_id%>
         <%#complex%>
