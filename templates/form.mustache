@@ -24,6 +24,12 @@
             <%#is_date%>
             <input date-range-picker options="daterangepicker.opts.single" class="form-control date-picker" type="text" ng-model="vm.<%g_object%>.<%name%>" required />
             <%/is_date%>
+            <%#is_boolean%>
+            <div class="btn-group btn-group-justified">
+                <label class="btn btn-default" ng-model="vm.<%g_object%>.<%name%>" uib-btn-radio="true">Si</label>
+                <label class="btn btn-default" ng-model="vm.<%g_object%>.<%name%>" uib-btn-radio="false">No</label>
+            </div>
+            <%/is_boolean%>
         </div>
         <%/simple_without_id%>
         <%#complex%>
