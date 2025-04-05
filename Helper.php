@@ -8,7 +8,7 @@ abstract class Helper
 		'terminales' => 'terminal'
 	];
 
-    public static function getDBInstance() { return modules\patata\db\DB::getInstance(); }
+    public static function getDBInstance() { return patata\db\DB::getInstance(); }
 
     public static function getData()
 	{

@@ -1,5 +1,5 @@
 <?php
-namespace modules\patata\db;
+namespace patata\db;
 
 class DB
 {
