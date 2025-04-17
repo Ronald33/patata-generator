@@ -2,6 +2,7 @@
 class {{g_class}}DAO
 {
     private static $table = '{{g_table}}';
+    private static $pk = '{{id.field}}';
 
     private static $selected_fields = 
     [
@@ -71,7 +72,7 @@ class {{g_class}}DAO
     public function selectAll($cast = true{{#is_complex}}, $set_sub_items = true{{/is_complex}})
     {
         $db = Repository::getDB();
-        $results = $db->select(self::$table, self::$selected_fields);
+        $results = $db->select(self::$table, self::$selected_fields, '', [], 'ORDER BY ' . self::$pk . ' DESC');
         array_walk($results, [$this, 'processRow'], ['cast' => $cast{{#is_complex}}, 'set_sub_items' => $set_sub_items{{/is_complex}}]);
         return $results;
     }

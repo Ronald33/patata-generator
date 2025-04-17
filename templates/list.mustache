@@ -1,7 +1,7 @@
 {{=<% %>=}}
 <h1 class="page-header">
     Lista de <%g_plural%>
-    <button ng-if="_usuario.__class == 'Administrador'" class="btn btn-default pull-right" ng-click="vm.abrir_form()">Agregar <%g_object%></button>
+    <button class="btn btn-default pull-right" ng-click="vm.abrir_form()">Agregar <%g_object%></button>
 </h1>
 
 <div class="table-responsive">
@@ -108,12 +108,12 @@
                 <td>
                     <ul class="list-inline">
                         <li>
-                            <button title="Editar el <%g_object%> #{{<%g_object%>.id}}" class="btn btn-xs btn-warning" ng-click="vm.abrir_form(<%g_object%>)" ng-disabled="_usuario.__class == 'Operador'">
+                            <button title="Editar el <%g_object%> #{{<%g_object%>.id}}" class="btn btn-xs btn-warning" ng-click="vm.abrir_form(<%g_object%>)">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </button>
                         </li>
                         <li>
-                            <button title="Eliminar el <%g_object%> #{{<%g_object%>.id}}" class="btn btn-xs btn-danger" ng-click="vm.eliminar(<%g_object%>);" ng-disabled="_usuario.__class == 'Operador'">
+                            <button title="Eliminar el <%g_object%> #{{<%g_object%>.id}}" class="btn btn-xs btn-danger" ng-click="vm.eliminar(<%g_object%>)">
                                 <span class="glyphicon glyphicon-trash"></span>
                             </button>
                         </li>
