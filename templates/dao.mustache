@@ -61,6 +61,8 @@ class {{g_class}}DAO
         }
 
         if($cast) { $row = {{g_class}}Helper::castTo{{g_class}}($row, $row->id); }
+        {{/is_complex}}
+        {{^is_complex}}if($cast) { $row = Helper::cast('{{g_class}}', $row); }{{/is_complex}}
     }
 
     public function selectAll($cast = true{{#is_complex}}, $set_sub_items = true{{/is_complex}})
