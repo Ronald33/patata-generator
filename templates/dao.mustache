@@ -43,14 +43,14 @@ class {{g_class}}DAO
         {
             {{#complex}}{{^allow_null}}
             $dao_{{object}} = new {{class}}DAO();
-            $row->{{name}} = $dao_{{object}}->selectById($row->{{field_without_prefix}}, $cast);
+            $row->{{name}} = $dao_{{object}}->selectById($row->{{field_without_prefix}}, false);
             {{/allow_null}}{{/complex}}
 
             {{#complex}}{{#allow_null}}
             if(isset($row->{{field_without_prefix}}))
             {
                 $dao_{{object}} = new {{class}}DAO();
-                $row->{{name}} = $dao_{{object}}->selectById($row->{{field_without_prefix}}, $cast);
+                $row->{{name}} = $dao_{{object}}->selectById($row->{{field_without_prefix}}, false);
             }
             else { $row->{{name}} = null; }
             {{/allow_null}}{{/complex}}
@@ -58,15 +58,9 @@ class {{g_class}}DAO
             {{#complex}}
             unset($row->{{field_without_prefix}});
             {{/complex}}
+        }
 
-            if($cast) { $row = {{g_class}}Helper::castTo{{g_class}}($row, $row->id); }
-        }
-        else
-        {
-            if($cast) { $row = Helper::cast('{{g_class}}', $row); }
-        }
-        {{/is_complex}}
-        {{^is_complex}}if($cast) { $row = Helper::cast('{{g_class}}', $row); }{{/is_complex}}
+        if($cast) { $row = {{g_class}}Helper::castTo{{g_class}}($row, $row->id); }
     }
 
     public function selectAll($cast = true{{#is_complex}}, $set_sub_items = true{{/is_complex}})
