@@ -3,9 +3,6 @@ abstract class {{g_class}}Helper
 {
     public static function castTo{{g_class}}($object, $id = NULL)
     {
-        assert($object instanceof {{g_class}} == false || $object instanceof stdClass == false, 'Ocurrió un error en el casteo');
-        if($object instanceof {{g_class}}) { return $object; }
-
         ${{g_object}} = Helper::cast('{{g_class}}', $object);
         
         {{#complex}}
