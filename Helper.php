@@ -19,7 +19,8 @@ abstract class Helper
 		$data = [];
 		foreach($rows as $row)
 		{
-			$table = reset(get_object_vars($row));
+			$vars = get_object_vars($row);
+			$table = reset($vars);
 			$plural = self::toCamelCase($table);
 			$object = self::toSingular($plural);
 			$class = ucfirst($object);
